@@ -21,10 +21,11 @@ My project as a whole aims to use supervised learning to predict the stage at wh
 
 Since we are using a large dataset with all the stats on college basketball teams during one season, and the high dimensionality of our data, we want to make sure that our PCA does its best to determine which variables account for the most variance to find the ones that are most significant. This will help predict our responses most accurately.
 
-Here are some key points to note:
-- PCA will come in use for other two models we are running
-- PCA will be tested with and without effect
-- Some models with complete dataset; some models with limited amount
+Here are some key points to note:\
+
+- PCA will come in use for other two models we are running\
+- PCA will be tested with and without effect\
+- Some models with complete dataset; some models with limited amount\
 
 ## Slide with R Output
 
@@ -53,5 +54,10 @@ num_components <- 5
 #Compute the new dataset with the selected number of principal components
 data_pca <- predict(pca, newdata = data_std)[, 1:num_components]
 data_pca
+#print summary of new dataset
+summary(data_pca)
 ```
+## Ryan: Results of my PCA
+Using PCA, we found the top three principal components that explain the majority of the variance in our dataset, accounting for about 63.8% of the total variance. These components are related to offensive and defensive efficiency, and rebounding performance, which are key factors in determining a team's success in college basketball. Based on our results, our analysis shows that these components are highly correlated with each other, which indicates that teams that excel in one area are likely to excel in the others as well. 
 
+Overall, our results suggest that PCA is a powerful tool for identifying the most important factors that contribute to a team's success in college  basketball.
