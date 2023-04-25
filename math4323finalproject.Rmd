@@ -2,7 +2,9 @@
 title: "4323 Final Project- College Basketball Dataset"
 author: "Ryan Nguyen and Justin George"
 date: "2023-04-25"
-output: slidy_presentation
+output:
+  ioslides_presentation: default
+  slidy_presentation: default
 ---
 
 ```{r setup, include=FALSE}
@@ -21,23 +23,30 @@ My project as a whole aims to use supervised learning to predict the stage at wh
 
 Since we are using a large dataset with all the stats on college basketball teams during one season, and the high dimensionality of our data, we want to make sure that our PCA does its best to determine which variables account for the most variance to find the ones that are most significant. This will help predict our responses most accurately.
 
+<<<<<<< HEAD
 Here are some key points to note:\
 
 - PCA will come in use for other two models we are running\
 - PCA will be tested with and without effect\
 - Some models with complete dataset; some models with limited amount\
+=======
+Here are some key points to note: \
+- PCA will come in use for other two models we are running \
+- PCA will be tested with and without effect \
+- Some models with complete dataset; some models with limited amount
+>>>>>>> 6ff8d39531a9eba6eee7107bbccb11a2940ce1b1
 
 ## Slide with R Output
 
 ```{r cbb dataset}
 library(readr)
 #our data set
-data <- read_csv("C:/Users/Ryan/Downloads/DATASCIENCESTSTS/PROJECT/cbb.csv")
+data <- read.csv("C:/Users/justi/Downloads/archive/cbb.csv")
 data
 #select only the numerical variables
 num_vars <- c("G", "W", "ADJOE", "ADJDE", "BARTHAG", "EFG_O", "EFG_D", "TOR", "TORD", "ORB", "DRB", "FTR", "FTRD", "2P_O", "2P_D", "3P_O", "3P_D", "ADJ_T", "WAB")
 #Standardize the data
-data_std <- scale(data[, num_vars])
+data_std <- scale(data[, 3:21])
 ```
 
 ## Slide with Continued R Output
@@ -60,4 +69,12 @@ summary(data_pca)
 ## Ryan: Results of my PCA
 Using PCA, we found the top three principal components that explain the majority of the variance in our dataset, accounting for about 63.8% of the total variance. These components are related to offensive and defensive efficiency, and rebounding performance, which are key factors in determining a team's success in college basketball. Based on our results, our analysis shows that these components are highly correlated with each other, which indicates that teams that excel in one area are likely to excel in the others as well. 
 
+<<<<<<< HEAD
 Overall, our results suggest that PCA is a powerful tool for identifying the most important factors that contribute to a team's success in college  basketball.
+=======
+## Justin: Conducting KNN (K-Nearest-Neighbors)
+
+Since we do have data on the predictor that we are using to base our analysis on, we can call this research as supervised learning. Based on that, one key task we want to accomplish is creating classification models that can help with the prediction of the final stage a college basketball team makes. KNN, or K-nearest-neighbors, is an excellent way to perform this. 
+
+## 
+>>>>>>> 6ff8d39531a9eba6eee7107bbccb11a2940ce1b1
