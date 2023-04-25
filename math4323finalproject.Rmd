@@ -1,0 +1,37 @@
+---
+title: "4323 Final Project- College Basketball Dataset"
+author: "Ryan Nguyen and Justin George"
+date: "2023-04-25"
+output: slidy_presentation
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+## Background on our Dataset
+
+This is a dataset that contains information about college basketball teams from 2013 to 2019, including the team's performance statistics as well as their postseason performance. The dataset contains 3455 observations with 24 variables, including 5 categorical var4iables and 19 numerical variables. 
+
+My project as a whole aims to use supervised learning to predict the stage at which a given college basketball team will be eliminated from the NCAA March Madness Tournament. The response variable is the categorical variable POSTSEASON, which represents the stage which the team was eliminated or where their season ended. We plan to use K-nearest neighbor classifier, support vector machines, and other categorical supervised learning algorithms to develop the classification model.
+
+
+
+## Slide with Bullets
+
+- Bullet 1
+- Bullet 2
+- Bullet 3
+
+## Slide with R Output
+
+```{r cars, echo = TRUE}
+summary(cars)
+```
+
+## Slide with Plot
+
+```{r pressure}
+plot(pressure)
+```
+
