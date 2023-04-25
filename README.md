@@ -28,8 +28,8 @@ WAB: Wins Above Bubble (The bubble refers to the cut-off between making the NCAA
 POSTSEASON: Round where the given team was eliminated or where their season ended (Categorical)\
 SEED: Seed in the NCAA March Madness Tournament (Categorical)**
 
-Damian and Justin will be working on implementing, testing, and optimizing a model using K-Nearest Neighbors. One member will try to determine the optimal value of K. They will also perform cross validation to ensure the model can predict new data.\
+Damian and Justin will be working on implementing, testing, and optimizing a model using K-Nearest Neighbors. One member will try to determine the optimal value of K. They will also perform cross validation to ensure the model can predict new data.
 
-Ryan will be performing Principal Component Analysis to potentially reduce the data to several components due to the high dimensionality of the data. \
+Ryan will be performing Principal Component Analysis to potentially reduce the data to several components due to the high dimensionality of the data. 
 
 Hope you enjoy!
