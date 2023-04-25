@@ -26,7 +26,7 @@ FTRD: Free Throw Rate Allowed (Numerical) \
 ADJ_T: Adjusted Tempo (An estimate of the tempo (possessions per 40 minutes) a team would have against the team that wants to play at an average Division I tempo) (Numerical)\
 WAB: Wins Above Bubble (The bubble refers to the cut-off between making the NCAA March Madness Tournament and not making it)  (Numerical)\
 POSTSEASON: Round where the given team was eliminated or where their season ended (Categorical)\
-SEED: Seed in the NCAA March Madness Tournament (Categorical)\**
+SEED: Seed in the NCAA March Madness Tournament (Categorical)**
 
 Damian and Justin will be working on implementing, testing, and optimizing a model using K-Nearest Neighbors. One member will try to determine the optimal value of K. They will also perform cross validation to ensure the model can predict new data.\
 
