@@ -3,8 +3,8 @@ title: "4323 Final Project- College Basketball Dataset"
 author: "Ryan Nguyen and Justin George"
 date: "2023-04-25"
 output:
-  ioslides_presentation: default
   slidy_presentation: default
+  ioslides_presentation: default
 ---
 
 ```{r setup, include=FALSE}
@@ -23,18 +23,10 @@ My project as a whole aims to use supervised learning to predict the stage at wh
 
 Since we are using a large dataset with all the stats on college basketball teams during one season, and the high dimensionality of our data, we want to make sure that our PCA does its best to determine which variables account for the most variance to find the ones that are most significant. This will help predict our responses most accurately.
 
-<<<<<<< HEAD
-Here are some key points to note:\
-
-- PCA will come in use for other two models we are running\
-- PCA will be tested with and without effect\
-- Some models with complete dataset; some models with limited amount\
-=======
 Here are some key points to note: \
 - PCA will come in use for other two models we are running \
 - PCA will be tested with and without effect \
 - Some models with complete dataset; some models with limited amount
->>>>>>> 6ff8d39531a9eba6eee7107bbccb11a2940ce1b1
 
 ## Slide with R Output
 
@@ -46,14 +38,15 @@ data
 #select only the numerical variables
 num_vars <- c("G", "W", "ADJOE", "ADJDE", "BARTHAG", "EFG_O", "EFG_D", "TOR", "TORD", "ORB", "DRB", "FTR", "FTRD", "2P_O", "2P_D", "3P_O", "3P_D", "ADJ_T", "WAB")
 #Standardize the data
-data_std <- scale(data[, 3:21])
+data_std = data
+data_std[,3:21] <- scale(data[, 3:21])
 ```
 
 ## Slide with Continued R Output
 
 ```{r results}
 #Perform PCA
-pca <- prcomp(data_std, center = TRUE, scale = FALSE)
+pca <- prcomp(data_std[,3:21], center = TRUE, scale = FALSE)
 #Print Summary of PCA
 summary(pca)
 #Plot cumulative proportion of variance explained by each principal component
@@ -63,18 +56,91 @@ num_components <- 5
 #Compute the new dataset with the selected number of principal components
 data_pca <- predict(pca, newdata = data_std)[, 1:num_components]
 data_pca
-#print summary of new dataset
-summary(data_pca)
 ```
-## Ryan: Results of my PCA
-Using PCA, we found the top three principal components that explain the majority of the variance in our dataset, accounting for about 63.8% of the total variance. These components are related to offensive and defensive efficiency, and rebounding performance, which are key factors in determining a team's success in college basketball. Based on our results, our analysis shows that these components are highly correlated with each other, which indicates that teams that excel in one area are likely to excel in the others as well. 
 
-<<<<<<< HEAD
-Overall, our results suggest that PCA is a powerful tool for identifying the most important factors that contribute to a team's success in college  basketball.
-=======
 ## Justin: Conducting KNN (K-Nearest-Neighbors)
 
 Since we do have data on the predictor that we are using to base our analysis on, we can call this research as supervised learning. Based on that, one key task we want to accomplish is creating classification models that can help with the prediction of the final stage a college basketball team makes. KNN, or K-nearest-neighbors, is an excellent way to perform this. 
 
-## 
->>>>>>> 6ff8d39531a9eba6eee7107bbccb11a2940ce1b1
+## Slide with R output
+
+```{r knn code, echo=TRUE}
+library(class)
+library(ISLR)
+data_std$SEED[is.na(data$SEED)] = 17
+table(data_std$YEAR)
+347 + 351 + 351 + 351 + 351 + 351
+
+n = nrow(data_std)
+train = 1:2102
+test = c(1:n)[-train]
+
+X.train = data_std[train, 3:21]
+y.train = data_std[train, 23]
+X.test = data_std[test, 3:21]
+y.test = data_std[test, 23]
+
+knn.pred = knn(train=X.train, test = X.test, cl = y.train, k = 1)
+mean(knn.pred != y.test)
+```
+
+## Model Validation 
+
+```{r CV, echo=TRUE}
+K.set = seq(1,401, by = 10)
+knn.test.err = numeric(length(K.set))
+for(j in 1:length(K.set)){
+  knn.pred = knn(train = X.train, test = X.test, cl = y.train, k = K.set[j])
+  knn.test.err[j] = mean(knn.pred != y.test)
+}
+min(knn.test.err)
+which.min(knn.test.err)
+K.set[which.min(knn.test.err)]
+```
+
+## Explanation
+
+The test error for K = 1 is severely high, and even running a function with k values up till 401 shows that 95% test error is the lowest among all. Therefore our method of replacing the NA values in the predictor did not work. We will attempt this again by removing the rows with NA values in the predictor.
+
+## Slide with R output
+
+```{r KNN2, echo = TRUE}
+library(tidyr)
+data <- read.csv("C:/Users/justi/Downloads/archive/cbb.csv")
+data_std = data
+data_std[,3:21] <- scale(data[, 3:21])
+data_std = data_std[!is.na(data_std$SEED),]
+table(data_std$YEAR)
+68 + 68 + 68 + 68 + 68 + 68
+n = nrow(data_std)
+train = 1:408
+test = c(1:n)[-train]
+
+X.train = data_std[train, 3:21]
+y.train = data_std[train, 23]
+X.test = data_std[test, 3:21]
+y.test = data_std[test, 23]
+knn.pred = knn(train=X.train, test = X.test, cl = y.train, k = 1)
+mean(knn.pred != y.test)
+```
+
+## Model Validation
+
+```{r CV2, echo = TRUE}
+K.set = seq(1,401, by = 10)
+knn.test.err = numeric(length(K.set))
+for(j in 1:length(K.set)){
+  knn.pred = knn(train = X.train, test = X.test, cl = y.train, k = K.set[j])
+  knn.test.err[j] = mean(knn.pred != y.test)
+}
+min(knn.test.err)
+which.min(knn.test.err)
+K.set[which.min(knn.test.err)]
+```
+
+## LOOCV
+
+```{r loocv, echo=TRUE}
+knn.pred = knn.cv(train = X.train, cl = y.train, k = 1)
+print(mean(knn.pred != y.train))
+```
