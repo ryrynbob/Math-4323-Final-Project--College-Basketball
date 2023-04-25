@@ -4,8 +4,8 @@ Ryan and Justin
 ## Data Selection
  The source of this dataset is Kaggle. More specifically, the files were procured by Andrew Sunberg, who scraped and cleaned the data from https://www.barttorvik.com/#, a website that collects and tracks statistics about college basketball games. Our inspiration for selecting this dataset is due to the prominence of the University of Houston’s mens’ basketball team at the national level.
       This data set contains 2455 observations of different college basketball teams from 2013 to 2019 with 24 different variables (5 Categorical and 19 Numerical). The variables are as follows: 
-**TEAM: The Division I college basketball school (Categorical)
-CONF: The Athletic Conference in which the school participates (Categorical)
+**TEAM: The Division I college basketball school (Categorical)\
+CONF: The Athletic Conference in which the school participates (Categorical)\
 G: Number of games played (Numerical)
 W: Number of games won (Numerical)
 ADJOE: Adjusted Offensive Efficiency (An estimate of the offensive efficiency (points scored per 100 possessions) a team would have against the average Division I defense) (Numerical)
