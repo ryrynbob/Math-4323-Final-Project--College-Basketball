@@ -33,10 +33,10 @@ Here are some key points to note: \
 ```{r cbb dataset}
 library(readr)
 #our data set
-data <- read.csv("C:/Users/justi/Downloads/archive/cbb.csv")
+data <- read.csv("C:/Users/Justin/Downloads/archive (1)/cbb.csv")
 data
 #select only the numerical variables
-num_vars <- c("G", "W", "ADJOE", "ADJDE", "BARTHAG", "EFG_O", "EFG_D", "TOR", "TORD", "ORB", "DRB", "FTR", "FTRD", "2P_O", "2P_D", "3P_O", "3P_D", "ADJ_T", "WAB")
+num_vars <- c("G", "W", "ADJOE", "ADJDE", "BARTHAG", "EFG_O", "EFG_D", "TOR", "TORD", "ORB", "DRB", "FTR", "FTRD", "X2P_O", "X2P_D", "X3P_O", "X3P_D", "ADJ_T", "WAB")
 #Standardize the data
 data_std = data
 data_std[,3:21] <- scale(data[, 3:21])
@@ -62,85 +62,118 @@ data_pca
 
 Since we do have data on the predictor that we are using to base our analysis on, we can call this research as supervised learning. Based on that, one key task we want to accomplish is creating classification models that can help with the prediction of the final stage a college basketball team makes. KNN, or K-nearest-neighbors, is an excellent way to perform this. 
 
-## Slide with R output
+## Formatting predictor variable
 
 ```{r knn code, echo=TRUE}
 library(class)
 library(ISLR)
-data_std$SEED[is.na(data$SEED)] = 17
-table(data_std$YEAR)
-347 + 351 + 351 + 351 + 351 + 351
+data$SEED[is.na(data$SEED)] = 17
 
-n = nrow(data_std)
-train = 1:2102
-test = c(1:n)[-train]
+#Encode POSTSEASON as follows:
 
-X.train = data_std[train, 3:21]
-y.train = data_std[train, 23]
-X.test = data_std[test, 3:21]
-y.test = data_std[test, 23]
-
-knn.pred = knn(train=X.train, test = X.test, cl = y.train, k = 1)
-mean(knn.pred != y.test)
+data$POSTSEASON <- ifelse(data$POSTSEASON == "Champions", 1,
+                          ifelse(data$POSTSEASON == "2ND", 2,
+                                 ifelse(data$POSTSEASON == "F4", 3,
+                                        ifelse(data$POSTSEASON == "E8", 4,
+                                               ifelse(data$POSTSEASON == "S16", 5,
+                                                      ifelse(data$POSTSEASON == "R32", 6,
+                                                             ifelse(data$POSTSEASON == "R64", 7,
+                                                                    ifelse(data$POSTSEASON == "R68", 8,NA))))))))
+data$POSTSEASON[is.na(data$POSTSEASON)] = 9
 ```
 
-## Model Validation 
+## Creating train and test sets
+ 
+```{r, echo = TRUE}
+n <- nrow(data)
+RNGkind(sample.kind = "Rounding")
+set.seed(1)
+train <- sample(1:n,1455)
 
-```{r CV, echo=TRUE}
-K.set = seq(1,401, by = 10)
-knn.test.err = numeric(length(K.set))
-for(j in 1:length(K.set)){
-  knn.pred = knn(train = X.train, test = X.test, cl = y.train, k = K.set[j])
-  knn.test.err[j] = mean(knn.pred != y.test)
+X.train <- data[train, -c(1,2,22)]
+X.test <- data[-train, -c(1,2,22)]
+y.train<- data$POSTSEASON[train]
+y.test <- data$POSTSEASON[-train]
+```
+
+## KNN: K = 1 to 10
+
+```{r}
+knn.test.err = numeric(length(10))
+for(K in c(1:10)){
+  set.seed(1)
+  print(paste("K: ", K, sep = ""))
+  knn.pred = knn(X.train,X.test,y.train,k = K)
+  print(paste("Test error: ", mean(knn.pred != y.test, sep = "")))
+  print(table(knn.pred,y.test))
+  knn.test.err[K] = mean(knn.pred != y.test)
 }
+```
+
+## Results
+
+```{r, echo = TRUE}
 min(knn.test.err)
 which.min(knn.test.err)
-K.set[which.min(knn.test.err)]
 ```
 
 ## Explanation
 
-The test error for K = 1 is severely high, and even running a function with k values up till 401 shows that 95% test error is the lowest among all. Therefore our method of replacing the NA values in the predictor did not work. We will attempt this again by removing the rows with NA values in the predictor.
+Through KNN validation set, we can see that the lowest test error among K = 1-10 is 0.145, with K = 6. This is a very good number to have result as it shows over 85% of the data is being properly classified by the KNN model. 
 
-## Slide with R output
 
-```{r KNN2, echo = TRUE}
-library(tidyr)
-data <- read.csv("C:/Users/justi/Downloads/archive/cbb.csv")
-data_std = data
-data_std[,3:21] <- scale(data[, 3:21])
-data_std = data_std[!is.na(data_std$SEED),]
-table(data_std$YEAR)
-68 + 68 + 68 + 68 + 68 + 68
-n = nrow(data_std)
-train = 1:408
-test = c(1:n)[-train]
-
-X.train = data_std[train, 3:21]
-y.train = data_std[train, 23]
-X.test = data_std[test, 3:21]
-y.test = data_std[test, 23]
-knn.pred = knn(train=X.train, test = X.test, cl = y.train, k = 1)
-mean(knn.pred != y.test)
-```
-
-## Model Validation
-
-```{r CV2, echo = TRUE}
-K.set = seq(1,401, by = 10)
-knn.test.err = numeric(length(K.set))
-for(j in 1:length(K.set)){
-  knn.pred = knn(train = X.train, test = X.test, cl = y.train, k = K.set[j])
-  knn.test.err[j] = mean(knn.pred != y.test)
-}
-min(knn.test.err)
-which.min(knn.test.err)
-K.set[which.min(knn.test.err)]
-```
-
-## LOOCV
+## LOOCV train and test sets
 
 ```{r loocv, echo=TRUE}
-knn.pred = knn.cv(train = X.train, cl = y.train, k = 1)
-print(mean(knn.pred != y.train))
+X.train <- data[, -c(1,2,22)]
+y.train <- data[, "POSTSEASON"]
 ```
+
+## LOOCV: K = 1 to 10
+
+```{r}
+knn.test.err = numeric(length(10))
+for(K in c(1:10)){
+  set.seed(1)
+  print(paste("K: ", K, sep = ""))
+  knn.pred = knn.cv(train = X.train, cl = y.train, k = K)
+  print(paste("Test error: ", mean(knn.pred != y.train, sep = "")))
+  print(table(knn.pred,y.train))
+  knn.test.err[K] = mean(knn.pred != y.train)
+}
+```
+
+## Results
+
+```{r, echo = TRUE}
+min(knn.test.err)
+which.min(knn.test.err)
+```
+
+## Explanation
+
+Through LOOCV, we can see that the lowest test error among K = 1-10 is 0.1389, with K = 10. This is a very good number to have result as it shows over 86% of the data is being properly classified by the KNN model.
+
+## K-fold Cross-Validation setup
+
+```{r, echo = TRUE}
+library(caret)
+data$POSTSEASON = as.character(data$POSTSEASON)
+set.seed(1)
+train.control = trainControl(method = "CV", 5)
+```
+
+## K-fold Cross-Validation
+
+```{r, echo = TRUE}
+set.seed(1)
+train(POSTSEASON~G + W + ADJOE + ADJDE + BARTHAG + EFG_O + EFG_D + TOR + TORD + ORB + DRB + FTR + FTRD + X2P_O + X2P_D + X3P_O + X3P_D + ADJ_T + WAB, data = data, method = "knn", tuneGrid = expand.grid(k = 1:10), trControl = train.control, metric = "Accuracy")
+```
+
+## Explanation
+
+Through K-fold Cross-Validation, we see that the highest accuracy among K = 1-10 folds is 0.8318, testing on the 10th fold.
+
+## Conclusion
+
+So far in our project we have attempted a PCA analysis as well as training a K-Nearest-Neighbors model through R. The PCA showed that roughly the first five Principal Components are the main ones to pay attention to as they explain the majority of the variance among all the PCs. The KNN model showed that it is relatively good at classifying basketball teams with their proper final bracket round. Through cross validation methods, we generally see the model performing with similar metrics, although Leave-One-Out Cross Validation has a slightly lower test error than the other methods. Our project will continue with other models being trained such as SVM. \ Note: this KNN model was performed without PCA taken into account. Our project will look at both models in comparison.
